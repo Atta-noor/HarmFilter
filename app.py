@@ -72,6 +72,9 @@ if backend_option == "HuggingFace (zero-shot)":
 elif backend_option == "HuggingFace (text-classifier)":
     hf_text = load_hf_text()
 
+# The single active HuggingFace predictor for the selected backend (None for BiLSTM)
+hf_active = hf_zero if hf_zero is not None else hf_text
+
 
 @st.cache_resource
 def load_bilstm_model(language='english'):
@@ -196,9 +199,9 @@ if model is not None and analysis_mode == "🖼️ Image Analysis":
                     st.session_state['extracted_text'] = ""
 
         # If user selected HuggingFace backend and model is available, allow HF classification
-        if backend_option.startswith("HuggingFace") and hf_model is not None and st.session_state.get('extracted_text') and str(st.session_state.get('extracted_text')).strip():
-            with st.expander("🔁 Analyze with HuggingFace Zero-Shot"):
-                hf_label, hf_conf, hf_probs = hf_model.predict(st.session_state['extracted_text'], return_probabilities=True)
+        if backend_option.startswith("HuggingFace") and hf_active is not None and st.session_state.get('extracted_text') and str(st.session_state.get('extracted_text')).strip():
+            with st.expander(f"🔁 Analyze with {backend_option}"):
+                hf_label, hf_conf, hf_probs = hf_active.predict(st.session_state['extracted_text'], return_probabilities=True)
                 st.write(f"**HF Prediction:** {hf_label} ({hf_conf:.1f}%)")
                 st.write("**HF Probabilities:**")
                 st.write({"Hate Speech": f"{hf_probs[0]*100:.2f}%", "Offensive Language": f"{hf_probs[1]*100:.2f}%", "Neither": f"{hf_probs[2]*100:.2f}%"})
