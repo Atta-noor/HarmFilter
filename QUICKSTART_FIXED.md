@@ -148,12 +148,6 @@ width_ths=0.3,          # Adjust word separation (0.2-0.5 recommended)
 - ✅ Accuracy: ~93% on test data
 - ✅ Language: English
 
-### Roman Urdu BiLSTM Model
-- ✅ Loaded: bilstm_model_roman_urdu.h5 (16.7 MB)
-- ✅ Classes: Hate Speech | Offensive | Neither
-- ✅ Accuracy: ~85-90% on test data
-- ✅ Language: Roman Urdu romanization
-
 ---
 
 ## 📚 File Structure
@@ -165,9 +159,7 @@ d:\fyp\
 ├── ocr_correction.py               # OCR fixes (IMPROVED: 21 char maps, 35 preserve words)
 ├── preprocessing.py                # Text preprocessing
 ├── bilstm_model.h5                 # English model
-├── bilstm_model_roman_urdu.h5      # Roman Urdu model
 ├── tokenizer.pkl                   # English tokenizer
-├── tokenizer_roman_urdu.pkl        # Roman Urdu tokenizer
 │
 ├── FIXES_APPLIED.md                # What was fixed (detailed)
 ├── PROJECT_ARCHITECTURE_OVERVIEW.md # Full system design

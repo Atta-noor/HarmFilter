@@ -20,17 +20,13 @@ print("-" * 60)
 required_files = {
     "Models": [
         "bilstm_model.h5",
-        "bilstm_model_roman_urdu.h5",
     ],
     "Tokenizers": [
         "tokenizer.pkl",
-        "tokenizer_roman_urdu.pkl",
         "lstm_config.pkl",
-        "lstm_config_roman_urdu.pkl",
     ],
     "Datasets": [
         "labeled_data.csv",
-        "Hate Speech Roman Urdu (HS-RU-20).csv",
     ],
     "Python Scripts": [
         "app.py",
@@ -100,20 +96,6 @@ try:
     # Test prediction
     test_text = "This is a test sentence"
     label, conf, probs = predictor_en.predict(test_text, return_probabilities=True)
-    print(f"  ✓ Test prediction successful: {label} ({conf:.1f}%)")
-    
-except Exception as e:
-    print(f"  ✗ Error: {str(e)}")
-
-try:
-    print("\nRoman Urdu BiLSTM Model:")
-    predictor_ru = LSTMPredictor('bilstm_model_roman_urdu.h5', 'tokenizer_roman_urdu.pkl', 'lstm_config_roman_urdu.pkl', 'roman_urdu')
-    print("  ✓ Model loaded successfully")
-    print(f"  ✓ Language: {predictor_ru.language}")
-    
-    # Test prediction
-    test_text = "ye ek test sentence hai"
-    label, conf, probs = predictor_ru.predict(test_text, return_probabilities=True)
     print(f"  ✓ Test prediction successful: {label} ({conf:.1f}%)")
     
 except Exception as e:
@@ -230,7 +212,6 @@ if not all_files_ok:
     print("\n⚠️  Issue: Some required files are missing!")
     print("\nTo fix:")
     print("  1. Run: python train_lstm_model.py")
-    print("  2. Run: python train_lstm_model_roman_urdu.py")
 
 if missing_deps:
     print(f"\n⚠️  Issue: {len(missing_deps)} Python dependencies missing:")
@@ -251,7 +232,6 @@ print("=" * 60)
 
 print("\n1. If models are missing:")
 print("   python train_lstm_model.py")
-print("   python train_lstm_model_roman_urdu.py")
 
 print("\n2. If dependencies are missing:")
 print("   pip install -r requirements.txt --no-cache-dir")

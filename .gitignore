@@ -24,13 +24,10 @@ ENV/
 *.pth
 image models/
 
-# Keep the trained BiLSTM models + tokenizers so the app runs out of the box
+# Keep the trained BiLSTM model + tokenizer so the app runs out of the box
 !models/bilstm_model.h5
-!models/bilstm_model_roman_urdu.h5
 !tokenizer.pkl
-!tokenizer_roman_urdu.pkl
 !lstm_config.pkl
-!lstm_config_roman_urdu.pkl
 
 # ===========================
 # Datasets (large CSVs)

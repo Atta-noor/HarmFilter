@@ -86,7 +86,7 @@ lol, lmao, smh, ngl, tbh, imho, aight, gonna, wanna, gotta, idc, bruh, teh, etc.
 
 01. All files present: ✅
     - app.py, lstm_inference.py, ocr_correction.py
-    - Models: bilstm_model.h5, bilstm_model_roman_urdu.h5
+    - Models: bilstm_model.h5
     - Tokenizers & configs all present
 
 02. Checking dependencies: ✅ (all 10 packages)
@@ -98,7 +98,6 @@ lol, lmao, smh, ngl, tbh, imho, aight, gonna, wanna, gotta, idc, bruh, teh, etc.
 
 03. Model loading: ✅
     ✅ English BiLSTM model loads
-    ✅ Roman Urdu BiLSTM model loads
     ✅ Test predictions working
 
 04. OCR correction: ✅
@@ -214,7 +213,7 @@ python final_verification.py
 
 ### ✅ Text Analysis (Already working)
 - Direct text input
-- English & Roman Urdu support
+- English support
 - Real-time predictions
 - Confidence scores & probability distribution
 - Preprocessed text view
@@ -229,7 +228,6 @@ python final_verification.py
 
 ### ✅ Models (Working)
 - English BiLSTM (93% accuracy)
-- Roman Urdu BiLSTM (85-90% accuracy)
 - Traditional ML: Random Forest, Decision Tree, AdaBoost
 - All models loaded and functional
 

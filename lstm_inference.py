@@ -27,17 +27,13 @@ class LSTMPredictor:
             model_path: Path to saved Keras model
             tokenizer_path: Path to saved tokenizer
             config_path: Path to model configuration
-            language: Language of the model ('english' or 'roman_urdu')
+            language: Kept for backward compatibility (English is the only supported language)
         """
         self.model = None
         self.tokenizer = None
         self.config = None
-        self.language = language.lower()
-    
-        if self.language == 'english':
-            self.stop_words = set(stopwords.words('english'))
-        else:
-            self.stop_words = set()  
+        self.language = 'english'
+        self.stop_words = set(stopwords.words('english'))
         
         try:
             
@@ -56,11 +52,7 @@ class LSTMPredictor:
             with open(config_path, 'rb') as f:
                 self.config = pickle.load(f)
             print("[OK] Configuration loaded successfully")
-            
-            
-            if 'language' in self.config:
-                self.language = self.config['language']
-            
+
         except FileNotFoundError as e:
             raise FileNotFoundError(f"Required file not found: {e}. Please train the model first.")
         except Exception as e:
@@ -182,31 +174,16 @@ class LSTMPredictor:
 
 def load_lstm_predictor(model_path='bilstm_model.h5', language='english'):
     """
-    Convenience function to load LSTM predictor
-    
+    Convenience function to load the English LSTM predictor.
+
     Args:
-        model_path: Path to model file (determines which model to load)
-        language: Language of the model ('english' or 'roman_urdu')
-        
+        model_path: Path to model file
+        language: Kept for backward compatibility (English is the only supported language)
+
     Returns:
         LSTMPredictor instance
     """
-    
-    if language == 'roman_urdu' or 'roman_urdu' in model_path.lower():
-        if 'bilstm' in model_path.lower():
-            tokenizer_path = 'tokenizer_roman_urdu.pkl'
-            config_path = 'lstm_config_roman_urdu.pkl'
-        else:
-            tokenizer_path = 'tokenizer_roman_urdu.pkl'
-            config_path = 'lstm_config_roman_urdu.pkl'
-        lang = 'roman_urdu'
-    else:
-       
-        tokenizer_path = 'tokenizer.pkl'
-        config_path = 'lstm_config.pkl'
-        lang = 'english'
-    
-    return LSTMPredictor(model_path, tokenizer_path, config_path, language=lang)
+    return LSTMPredictor(model_path, 'tokenizer.pkl', 'lstm_config.pkl', language='english')
 
 
 

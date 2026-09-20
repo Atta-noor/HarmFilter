@@ -1,11 +1,10 @@
 <h1 align="center">🛡️ HarmFilter</h1>
-<h3 align="center">Hate Speech & Offensive Language Detection — English + Roman Urdu, Text + Memes</h3>
+<h3 align="center">Hate Speech & Offensive Language Detection — Text + Memes</h3>
 
 <p align="center">
-  A deep-learning NLP system that classifies text as
+  A deep-learning NLP system that classifies English text as
   <b>Hate Speech</b>, <b>Offensive Language</b>, or <b>Neither</b> —
-  in both <b>English</b> and <b>Roman Urdu</b>, from raw text
-  <i>or</i> from images of memes via OCR.
+  from raw text <i>or</i> from images of memes via OCR.
 </p>
 
 <p align="center">
@@ -24,8 +23,8 @@
 HarmFilter is an end-to-end content-moderation prototype. Its primary classifier is a
 **Bidirectional LSTM** (Keras) trained to distinguish three classes, and it goes beyond
 plain text: drop in a **meme image** and the app runs a multi-stage **OCR pipeline** to
-extract the caption, then classifies it. It supports **Roman Urdu** in addition to English,
-and lets you swap in two **HuggingFace** transformer backends for comparison.
+extract the caption, then classifies it. It also lets you swap in two **HuggingFace**
+transformer backends for comparison.
 
 | Class | Label | Meaning |
 |:---:|:---|:---|
@@ -38,7 +37,6 @@ and lets you swap in two **HuggingFace** transformer backends for comparison.
 ## 🚀 Features
 
 - **🧠 BiLSTM deep-learning classifier** (Keras) — the primary, locally-run model.
-- **🌐 Bilingual** — separate models and preprocessing for **English** and **Roman Urdu**.
 - **🖼️ Image / meme analysis** — a 4-stage PaddleOCR v4 pipeline (multi-view preprocessing →
   detection + NMS de-duplication → DBSCAN top/bottom caption clustering → text assembly),
   with an EasyOCR fallback for low-confidence regions.
@@ -55,7 +53,7 @@ and lets you swap in two **HuggingFace** transformer backends for comparison.
 ```
                     ┌──────────────────────────┐
    Text input ─────►│                          │
-                    │   Preprocess (per-lang)  │──►  BiLSTM  ──►  [ Hate / Offensive / Neither ]
+                    │   Preprocess (clean)     │──►  BiLSTM  ──►  [ Hate / Offensive / Neither ]
    Image input ─┐   │   tokenize + pad          │      or HuggingFace backend
                 │   └──────────────────────────┘
                 ▼
@@ -85,7 +83,6 @@ so train them locally first:
 
 ```bash
 python train_lstm_model.py              # English BiLSTM
-python train_lstm_model_roman_urdu.py   # Roman Urdu BiLSTM
 ```
 
 ### Run the app
@@ -98,15 +95,15 @@ streamlit run app.py                    # http://localhost:8501
 
 ## 🖥️ Usage
 
-**In the app:** choose an **analysis mode** (Text / Image), a **language** (English / Roman Urdu),
-and a **model backend**, then enter text or upload a meme and view the prediction with its
-confidence and probability breakdown.
+**In the app:** choose an **analysis mode** (Text / Image) and a **model backend**, then
+enter text or upload a meme and view the prediction with its confidence and probability
+breakdown.
 
 **From the command line:**
 
 ```bash
-python ocr_pipeline.py <image>                 # OCR only  -> JSON
-python -m src.hate_speech <image> [language]   # OCR + classify -> JSON with label
+python ocr_pipeline.py <image>          # OCR only  -> JSON
+python -m src.hate_speech <image>       # OCR + classify -> JSON with label
 ```
 
 ---
@@ -128,7 +125,7 @@ ocr_pipeline.py               # MemeOCRPipeline — PaddleOCR v4 meme OCR
 huggingface_inference.py      # Zero-shot transformer backend
 huggingface_text_classifier.py# RoBERTa hate-speech backend
 src/hate_speech.py            # End-to-end OCR -> classify wrapper (CLI)
-train_lstm_model*.py          # Training scripts (English / Roman Urdu)
+train_lstm_model.py           # Training script (English BiLSTM)
 requirements.txt
 ```
 

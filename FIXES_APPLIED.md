@@ -180,7 +180,6 @@ PRESERVE_WORDS = {
 ### ✅ Model Tests
 ```
 ✓ English BiLSTM Model: Loads successfully
-✓ Roman Urdu BiLSTM Model: Loads successfully
 ✓ Predictions working: "Offensive Language (44.1%)"
 ```
 
@@ -278,7 +277,7 @@ streamlit run app.py
 
 ### What Still Works
 - ✅ Text analysis mode (direct input)
-- ✅ BiLSTM predictions (English & Roman Urdu)
+- ✅ BiLSTM predictions (English)
 - ✅ Model loading
 - ✅ Traditional ML models (RF, DT, AdaBoost)
 - ✅ Preprocessing pipeline

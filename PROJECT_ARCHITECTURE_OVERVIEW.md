@@ -11,7 +11,7 @@ This is a **Hate Speech Detection System** with dual capabilities:
 - **Backend**: Python with TensorFlow/Keras
 - **Models**: BiLSTM (deep learning) for text classification
 - **OCR**: EasyOCR for image text extraction
-- **Support**: English & Roman Urdu languages
+- **Support**: English language
 
 ---
 
@@ -69,26 +69,19 @@ This is a **Hate Speech Detection System** with dual capabilities:
 | File | Purpose |
 |------|---------|
 | **train_lstm_model.py** | Train English BiLSTM model |
-| **train_lstm_model_roman_urdu.py** | Train Roman Urdu BiLSTM model |
 | **train_and_save_models.py** | Train traditional ML models (RF, DT, AdaBoost) |
 
 ### Model Files (Generated)
 | File | Purpose |
 |------|---------|
 | **bilstm_model.h5** | Trained English BiLSTM model |
-| **bilstm_model_roman_urdu.h5** | Trained Roman Urdu BiLSTM model |
 | **tokenizer.pkl** | English text tokenizer |
-| **tokenizer_roman_urdu.pkl** | Roman Urdu text tokenizer |
 | **lstm_config.pkl** | English model configuration |
-| **lstm_config_roman_urdu.pkl** | Roman Urdu model configuration |
 
 ### Datasets
 | File | Purpose |
 |------|---------|
 | **labeled_data.csv** | English hate speech dataset |
-| **Hate Speech Roman Urdu (HS-RU-20).csv** | Roman Urdu dataset |
-| **MultiLanguageTrainDataset.csv** | Multi-language dataset |
-| **Rurdu_test.csv** | Roman Urdu test data |
 
 ### Testing Files
 | File | Purpose |
@@ -211,7 +204,7 @@ low_text=0.2  # was 0.3
 # 3. Enable language detection
 results = reader.readtext(
     img_array,
-    languages=['en', 'roman_urdu'],  # Add detected languages
+    languages=['en'],  # Add detected languages
     paragraph=True,
     mag_ratio=2.0,
 )
@@ -269,7 +262,6 @@ OCR_CHAR_FIXES = {
 **Symptoms**:
 - Intentional misspellings corrected incorrectly
 - Slang words destroyed
-- Roman Urdu words not recognized
 
 **Root Causes**:
 1. `autocorrect` library aggressive on non-English
@@ -399,13 +391,6 @@ streamlit run app.py --logger.level=debug 2>&1 | tee app_debug.log
 - **Performance**: ~93% accuracy on test set
 - **Tokenizer**: Vocab size 5,000+ tokens
 
-### Roman Urdu BiLSTM Model
-- **Architecture**: Same as English model
-- **Training Data**: `Hate Speech Roman Urdu (HS-RU-20).csv`
-- **Classes**: 0=Hate Speech, 1=Offensive, 2=Neither
-- **Performance**: ~85-90% accuracy
-- **Tokenizer**: Specialized for Roman Urdu romanization
-
 ---
 
 ## 🚀 Recommendations
@@ -423,7 +408,6 @@ streamlit run app.py --logger.level=debug 2>&1 | tee app_debug.log
 ## 📝 Configuration Files Missing (Optional)
 
 These can improve performance if added:
-- `lstm_config_roman_urdu.pkl` ✓ (exists)
 - `lstm_config.pkl` ✓ (exists)
 - Need: Configuration for model hyperparameters documentation
 

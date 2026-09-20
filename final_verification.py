@@ -10,9 +10,8 @@ print('=' * 60)
 # Check files
 files_ok = all(os.path.exists(f) for f in [
     'app.py', 'lstm_inference.py', 'ocr_correction.py',
-    'bilstm_model.h5', 'bilstm_model_roman_urdu.h5',
-    'tokenizer.pkl', 'tokenizer_roman_urdu.pkl'
-])
+    'tokenizer.pkl'
+]) and any(os.path.exists(f) for f in ['bilstm_model.h5', os.path.join('models', 'bilstm_model.h5')])
 print(f'\n01. All files present: {"✅" if files_ok else "❌"}')
 
 # Check dependencies
@@ -37,13 +36,6 @@ try:
 except Exception as e:
     models_ok = False
     print(f'    ❌ English BiLSTM: {str(e)[:50]}')
-
-try:
-    p2 = LSTMPredictor('bilstm_model_roman_urdu.h5', 'tokenizer_roman_urdu.pkl', 'lstm_config_roman_urdu.pkl', 'roman_urdu')
-    print('    ✅ Roman Urdu BiLSTM model')
-except Exception as e:
-    models_ok = False
-    print(f'    ❌ Roman Urdu BiLSTM: {str(e)[:50]}')
 
 # Check OCR Correction
 ocr_ok = True

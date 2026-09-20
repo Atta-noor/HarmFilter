@@ -11,9 +11,9 @@ Then expose it publicly:
     ngrok http 5000               # gives you an https://xxxx.ngrok-free.app URL
 
 Endpoints:
-    GET  /health                  -> {"status": "ok", "languages_loaded": [...]}
+    GET  /health                  -> {"status": "ok", "model_loaded": true|false}
     POST /predict                 -> classify text
-        request  JSON: {"text": "...", "language": "english" | "roman_urdu"}
+        request  JSON: {"text": "..."}
         response JSON: {
             "label": "Hate Speech" | "Offensive Language" | "Neither",
             "confidence": 87.4,                      # percent for `label`
@@ -21,8 +21,7 @@ Endpoints:
                 "hate_speech": 87.4,
                 "offensive_language": 9.1,
                 "neither": 3.5
-            },
-            "language": "english"
+            }
         }
 """
 import os
@@ -37,13 +36,13 @@ from lstm_inference import load_lstm_predictor
 app = Flask(__name__)
 CORS(app)  # allow calls from Flutter web / any origin
 
-# Cache one predictor per language so the model loads once, not per request.
-_predictors = {}
+# Cache the predictor so the model loads once, not per request.
+_predictor = None
 
 
-def _resolve_model_path(language: str) -> str:
+def _resolve_model_path() -> str:
     """Mirror app.py's lookup: root or models/, .h5 or .keras."""
-    base = "bilstm_model_roman_urdu" if language == "roman_urdu" else "bilstm_model"
+    base = "bilstm_model"
     candidates = [
         f"{base}.h5",
         f"{base}.keras",
@@ -54,34 +53,33 @@ def _resolve_model_path(language: str) -> str:
         if os.path.exists(path):
             return path
     raise FileNotFoundError(
-        f"No BiLSTM model found for '{language}'. Tried: {', '.join(candidates)}"
+        f"No BiLSTM model found. Tried: {', '.join(candidates)}"
     )
 
 
-def get_predictor(language: str):
-    language = "roman_urdu" if language == "roman_urdu" else "english"
-    if language not in _predictors:
-        model_path = _resolve_model_path(language)
-        _predictors[language] = load_lstm_predictor(model_path, language=language)
-    return _predictors[language]
+def get_predictor():
+    global _predictor
+    if _predictor is None:
+        model_path = _resolve_model_path()
+        _predictor = load_lstm_predictor(model_path)
+    return _predictor
 
 
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok", "languages_loaded": list(_predictors.keys())})
+    return jsonify({"status": "ok", "model_loaded": _predictor is not None})
 
 
 @app.post("/predict")
 def predict():
     data = request.get_json(silent=True) or {}
     text = (data.get("text") or "").strip()
-    language = data.get("language", "english")
 
     if not text:
         return jsonify({"error": "Field 'text' is required and must be non-empty."}), 400
 
     try:
-        predictor = get_predictor(language)
+        predictor = get_predictor()
     except FileNotFoundError as e:
         # Model artifacts (tokenizer.pkl / lstm_config.pkl / .h5) not present — see CLAUDE.md
         return jsonify({"error": str(e)}), 503
@@ -100,7 +98,6 @@ def predict():
             "offensive_language": round(float(probs[1]) * 100, 2),
             "neither": round(float(probs[2]) * 100, 2),
         },
-        "language": "roman_urdu" if language == "roman_urdu" else "english",
     })
 
 

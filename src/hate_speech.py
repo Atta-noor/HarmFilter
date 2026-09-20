@@ -27,7 +27,6 @@ def analyze_meme(
     image_path: str,
     predictor=None,
     use_gpu: bool = False,
-    language: str = "english",
 ) -> dict:
     """End-to-end meme hate speech detection.
 
@@ -38,7 +37,6 @@ def analyze_meme(
         image_path: Path to the meme image.
         predictor: An LSTMPredictor instance. If None, one is loaded automatically.
         use_gpu: Whether to use GPU for PaddleOCR.
-        language: Language for the BiLSTM model ('english' or 'roman_urdu').
 
     Returns:
         dict with keys:
@@ -58,7 +56,7 @@ def analyze_meme(
     if predictor is None:
         try:
             from lstm_inference import load_lstm_predictor
-            predictor = load_lstm_predictor(language=language)
+            predictor = load_lstm_predictor()
         except Exception as exc:
             logger.error("Failed to load BiLSTM predictor: %s", exc)
             ocr_result.update({
@@ -103,11 +101,10 @@ if __name__ == "__main__":
     import json
 
     if len(sys.argv) < 2:
-        print("Usage: python -m src.hate_speech <image_path> [language]")
+        print("Usage: python -m src.hate_speech <image_path>")
         sys.exit(1)
 
     img_path = sys.argv[1]
-    lang = sys.argv[2] if len(sys.argv) > 2 else "english"
 
-    result = analyze_meme(img_path, language=lang)
+    result = analyze_meme(img_path)
     print(json.dumps(result, indent=2, ensure_ascii=False))

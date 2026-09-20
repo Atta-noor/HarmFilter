@@ -29,13 +29,8 @@ analysis_mode = st.sidebar.radio(
 
 st.sidebar.markdown("---")
 
-st.sidebar.header("Language Selection")
-language_option = st.sidebar.selectbox(
-    "Choose language:",
-    ["English", "Roman Urdu"]
-)
-
-language = "english" if language_option == "English" else "roman_urdu"
+# English is the only supported language
+language = "english"
 
 # ── Model Backend Selection (BiLSTM or HuggingFace zero-shot)
 st.sidebar.header("Model Backend")
@@ -82,14 +77,9 @@ def load_bilstm_model(language='english'):
     try:
         from lstm_inference import load_lstm_predictor
 
-        if language == 'roman_urdu':
-            base_name = "bilstm_model_roman_urdu"
-            tokenizer_file = "tokenizer_roman_urdu.pkl"
-            config_file = "lstm_config_roman_urdu.pkl"
-        else:
-            base_name = "bilstm_model"
-            tokenizer_file = "tokenizer.pkl"
-            config_file = "lstm_config.pkl"
+        base_name = "bilstm_model"
+        tokenizer_file = "tokenizer.pkl"
+        config_file = "lstm_config.pkl"
 
         # Support common save patterns: root or models/, and .h5 or .keras.
         model_candidates = [
@@ -333,11 +323,8 @@ elif model is not None and analysis_mode == "📝 Text Analysis":
     st.header("Enter Text to Analyze")
     
     
-    if language == "roman_urdu":
-        placeholder = "Roman Urdu text daalain (e.g., 'kya mein bhooka hon? kutia ab tum ney ye poocha hai')..."
-    else:
-        placeholder = "Enter text to check for hate speech, offensive language, or neither..."
-    
+    placeholder = "Enter text to check for hate speech, offensive language, or neither..."
+
     user_input = st.text_area(
         "Type or paste your text here:",
         height=150,
@@ -410,35 +397,21 @@ elif model is not None and analysis_mode == "📝 Text Analysis":
     st.markdown("---")
     st.header("💡 Example Texts")
     
-    if language == "roman_urdu":
-        example_texts = {
-            "Hate Speech (Hostile)": [
-                "kya mein bhooka hon? kutia ab tum ney ye poocha hai, mein ho sakta hon",
-                "mein siyah logon se nafrat karta hon",
-                "Syrians ghar jao aur maro"
-            ],
-            "Neither (Neutral)": [
-                "mujhe pizza khanay ki shadeed khuwahish hai lekin mere paas paisy nahi hain",
-                "Pakistan ne 1992 ka cricket world cup jeeta",
-                "islam aman ka mazhab hai"
-            ]
-        }
-    else:
-        example_texts = {
-            "Hate Speech": [
-                "I hate all people from that country",
-                "They should all go back where they came from"
-            ],
-            "Offensive Language": [
-                "That's so stupid and annoying",
-                "What a dumb thing to say"
-            ],
-            "Neither": [
-                "The weather is nice today",
-                "I love learning about machine learning"
-            ]
-        }
-    
+    example_texts = {
+        "Hate Speech": [
+            "I hate all people from that country",
+            "They should all go back where they came from"
+        ],
+        "Offensive Language": [
+            "That's so stupid and annoying",
+            "What a dumb thing to say"
+        ],
+        "Neither": [
+            "The weather is nice today",
+            "I love learning about machine learning"
+        ]
+    }
+
     for category, texts in example_texts.items():
         with st.expander(f"📝 {category} Examples"):
             for text in texts:
@@ -471,38 +444,23 @@ elif model is not None and analysis_mode == "📝 Text Analysis":
     
     st.sidebar.markdown("---")
     st.sidebar.header("Model Information")
-    st.sidebar.info(f"Language: **{language_option}**")
+    st.sidebar.info("Language: **English**")
     st.sidebar.info("Current Model: **BiLSTM (Advanced)**")
     st.sidebar.caption("🧠 Deep Learning Model")
     st.sidebar.caption("Uses sequence-based tokenization and neural networks")
     st.sidebar.caption("Bidirectional LSTM reads text both ways for better context")
-    if language == "roman_urdu":
-        st.sidebar.caption("🇵🇰 Trained on Roman Urdu dataset")
 
 else:
     st.error("⚠️ BiLSTM Model not found!")
     if "lstm_load_error" in st.session_state:
         st.error(f"Load error: {st.session_state['lstm_load_error']}")
     
-    if language == "roman_urdu":
-        st.info("""
-        To use the Roman Urdu BiLSTM model, you need to:
-        1. Make sure 'Hate Speech Roman Urdu (HS-RU-20).csv' is in the current directory
-        2. Run 'train_lstm_model_roman_urdu.py' to train and save the model
-        3. Refresh this page
-        
-        The training script will create:
-        - bilstm_model_roman_urdu.h5 (Keras model)
-        - tokenizer_roman_urdu.pkl (Text tokenizer)
-        - lstm_config_roman_urdu.pkl (Model configuration)
-        """)
-    else:
-        st.info("""
+    st.info("""
         To use the English BiLSTM model, you need to:
         1. Make sure 'labeled_data.csv' is in the current directory
         2. Run 'train_lstm_model.py' to train and save the model
         3. Refresh this page
-        
+
         The training script will create:
         - bilstm_model.h5 (Keras model)
         - tokenizer.pkl (Text tokenizer)
